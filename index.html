@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挑战每月一款小游戏</title>
+</head>
+<body>
+    <table id="table" border style="text-align: left;"></table>
+
+    <script>
+        const games = {
+            贪吃蛇: '00-snake',
+            俄罗斯方块: '01-tetris',
+        };
+
+        document.getElementById('table').innerHTML = ['<tr><th>游戏名称</th><th>演示地址</th><th>演示地址</th></tr>'].concat(Object.keys(games).map((name) => `
+            <tr>
+                <td>${name}</td>
+                <td>
+                    <a href="./${games[name]}/index.html" rel="noopener noreferrer" target="_blank">
+                        ./${games[name]}/
+                    </a>
+                </td>
+                <td>
+                    <a href="https://wanghaida.com/deom/${games[name]}/" rel="noopener noreferrer" target="_blank">
+                        https://wanghaida.com/deom/${games[name]}/
+                    </a>
+                </td>
+            </tr>
+        `)).join('');
+    </script>
+</body>
+</html>
