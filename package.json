@@ -1,14 +1,12 @@
 {
-  "name": "root",
+  "name": "games",
   "private": true,
-  "workspaces": [
-    "*"
-  ],
   "scripts": {
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "start": "serve"
   },
   "devDependencies": {
     "prettier": "^2.5.1",
-    "lerna": "^4.0.0"
+    "serve": "^13.0.2"
   }
 }
