@@ -1,0 +1,207 @@
+#root {
+    width: 600px;
+    margin: 50px auto;
+}
+
+// 操作区
+.actions {
+    margin-bottom: 10px;
+}
+
+// 游戏区
+#game {
+    display: grid;
+    grid-template-columns: repeat(30, 20px);
+    grid-template-rows: repeat(30, 20px);
+    width: 600px;
+    height: 600px;
+    background: url('./images/background.png') center no-repeat;
+
+    div {
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            transform-origin: 0 0;
+        }
+    }
+
+    .grass_top_left::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_top_left.png') center / 21px no-repeat;
+    }
+    .grass_top::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_top.png') center / 21px no-repeat;
+    }
+    .grass_top_right::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_top_right.png') center / 22px no-repeat;
+    }
+    .grass_right::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_right.png') center / 21px no-repeat;
+    }
+    .grass_bottom_right::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_bottom_right.png') center / 21px no-repeat;
+    }
+    .grass_bottom::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_bottom.png') center / 21px no-repeat;
+    }
+    .grass_bottom_left::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_bottom_left.png') center / 21px no-repeat;
+    }
+    .grass_left::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/grass_left.png') center / 21px no-repeat;
+    }
+    .grass_horizontal::before {
+        width: 22px;
+        height: 21px;
+        background: url('./images/grass_horizontal.png') center / 22px 21px no-repeat;
+    }
+    .grass_vertical::before {
+        width: 21px;
+        height: 22px;
+        background: url('./images/grass_vertical.png') center / 21px 22px no-repeat;
+    }
+
+    .stone_02::before {
+        width: 21px;
+        height: 21px;
+        background: url('./images/stone_02.png') center / 21px no-repeat;
+    }
+    .stone_03::before {
+        width: 22px;
+        height: 21px;
+        background: url('./images/stone_03.png') center / 22px 21px no-repeat;
+    }
+    .stone_04::before {
+        width: 20px;
+        height: 20px;
+        background: url('./images/stone_04.png') center / 20px no-repeat;
+    }
+
+    .snake_head_top::before {
+        width: 26px;
+        height: 26px;
+        background: url('./images/snake_head.png') center / 26px no-repeat;
+        transform: rotate(0deg) translate(-14px, -16.5px);
+    }
+    .snake_head_right::before {
+        width: 26px;
+        height: 26px;
+        background: url('./images/snake_head.png') center / 26px no-repeat;
+        transform: rotate(90deg) translate(-13.5px, -16.5px);
+    }
+    .snake_head_bottom::before {
+        width: 26px;
+        height: 26px;
+        background: url('./images/snake_head.png') center / 26px no-repeat;
+        transform: rotate(180deg) translate(-13px, -16.5px);
+    }
+    .snake_head_left::before {
+        width: 26px;
+        height: 26px;
+        background: url('./images/snake_head.png') center / 26px no-repeat;
+        transform: rotate(270deg) translate(-13.5px, -16.5px);
+    }
+    .snake_body_top_left::before {
+        width: 17px;
+        height: 17px;
+        background: url('./images/snake_body_2.png') center / 17px no-repeat;
+        transform: rotate(0deg) translate(-7px, -6.5px);
+    }
+    .snake_body_top_right::before {
+        width: 17px;
+        height: 17px;
+        background: url('./images/snake_body_2.png') center / 17px no-repeat;
+        transform: rotate(90deg) translate(-6.5px, -6px);
+    }
+    .snake_body_bottom_right::before {
+        width: 17px;
+        height: 17px;
+        background: url('./images/snake_body_2.png') center / 17px no-repeat;
+        transform: rotate(180deg) translate(-6px, -6.5px);
+    }
+    .snake_body_bottom_left::before {
+        width: 17px;
+        height: 17px;
+        background: url('./images/snake_body_2.png') center / 17px no-repeat;
+        transform: rotate(270deg) translate(-6.5px, -7px);
+    }
+    .snake_body_horizontal::before {
+        width: 13px;
+        height: 21px;
+        background: url('./images/snake_body_1.png') center / 13px 21px no-repeat;
+        transform: rotate(90deg) translate(-6.5px, -10.5px);
+    }
+    .snake_body_vertical::before {
+        background: url('./images/snake_body_1.png') center / 13px 22px no-repeat;
+    }
+    .snake_tail_top_0::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_0.png') center / 16px 18px no-repeat;
+        transform: rotate(180deg) translate(-6px, -10px);
+    }
+    .snake_tail_top_1::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_1.png') center / 16px 18px no-repeat;
+        transform: rotate(180deg) translate(-9px, -10px);
+    }
+    .snake_tail_right_0::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_0.png') center / 16px 18px no-repeat;
+        transform: rotate(270deg) translate(-6.5px, -10px);
+    }
+    .snake_tail_right_1::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_1.png') center / 16px 18px no-repeat;
+        transform: rotate(270deg) translate(-9.5px, -9.5px);
+    }
+    .snake_tail_bottom_0::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_0.png') center / 16px 18px no-repeat;
+        transform: translate(-7px, -10px);
+    }
+    .snake_tail_bottom_1::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_1.png') center / 16px 18px no-repeat;
+        transform: translate(-10px, -10px);
+    }
+    .snake_tail_left_0::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_0.png') center / 16px 18px no-repeat;
+        transform: rotate(90deg) translate(-6.5px, -9.5px);
+    }
+    .snake_tail_left_1::before {
+        width: 16px;
+        height: 18px;
+        background: url('./images/snake_tail_1.png') center / 16px 18px no-repeat;
+        transform: rotate(90deg) translate(-9.5px, -9.5px);
+    }
+}
