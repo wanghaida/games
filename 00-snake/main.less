@@ -5,7 +5,14 @@
 
 // 操作区
 .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
+
+    #score {
+        font-size: 14px;
+    }
 }
 
 // 游戏区
@@ -30,6 +37,12 @@
             transform: translate(-50%, -50%);
             transform-origin: 0 0;
         }
+    }
+
+    .food::before {
+        width: 27px;
+        height: 21px;
+        background: url('./images/food.png') center / 27px 21px no-repeat;
     }
 
     .grass_top_left::before {

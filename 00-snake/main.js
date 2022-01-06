@@ -124,15 +124,14 @@ const drawMap = () => {
 };
 
 const snake = {
-    // 蛇
-    // body: [[2, 4], [2, 3], [2, 2]],
-    body: [[6, 8], [6, 7], [6, 6], [6, 5], [5, 5], [4, 5], [3, 5], [2, 5]],
-    // 墙（需要和地图当中的草墙、石头对应上，四周的草墙单独计算）
-    wall: [[5, 19], [5, 20], [5, 21], [6, 5], [6, 21], [7, 21], [7, 22], [14, 24], [16, 10], [17, 7], [17, 8], [17, 9], [17, 10], [22, 9]],
-    // 方向（top right bottom left）
-    direction: 'right',
+    // 蛇身
+    body: [[2, 4], [2, 3], [2, 2]],
     // 被移除的蛇尾（用来清除样式）
     last: [2, 1],
+    // 方向（top right bottom left）
+    direction: 'right',
+    // 食物
+    food: [2, 8],
     // 定时器
     timer: null,
     // 绘制蛇
@@ -228,6 +227,27 @@ const snake = {
             oDivs[node[0] * 30 + node[1]].className = classname;
         }
     },
+    // 绘制食物
+    drawFood() {
+        // 所有坐标点
+        const oDivs = document.querySelectorAll('#game div');
+
+        // 清除旧位置食物
+        oDivs[this.food[0] * 30 + this.food[1]].className = '';
+
+        // 生成新位置食物
+        while (
+            // 地图中的障碍物
+            map[this.food[0]][this.food[1]] !== 0 ||
+            // 蛇自身
+            this.body.find((item) => item[0] === this.food[0] && item[1] === this.food[1])
+        ) {
+            // 生成 (1-28, 1-28) 的坐标，因为 0 和 29 是墙
+            this.food = [Math.floor(Math.random() * 28 + 1), Math.floor(Math.random() * 28 + 1)]
+        }
+
+        oDivs[this.food[0] * 30 + this.food[1]].className = 'food';
+    },
     // 初始化
     init() {
         clearTimeout(this.timer);
@@ -238,6 +258,7 @@ const snake = {
         this.body = [[2, 4], [2, 3], [2, 2]];
         this.last = [2, 1];
         this.direction = 'right';
+        this.drawFood();
         this.drawSnake();
     },
     // 开始游戏
@@ -264,10 +285,8 @@ const snake = {
 
             // 判断是否撞墙
             if (
-                // 四周的墙
-                head[0] === 0 || head[0] === 29 || head[1] === 0 || head[1] === 29 ||
-                // 中间的墙
-                this.wall.find((item) => item[0] === head[0] && item[1] === head[1]) ||
+                // 地图中的障碍物
+                map[head[0]][head[1]] !== 0 ||
                 // 蛇自身
                 this.body.find((item) => item[0] === head[0] && item[1] === head[1])
             ) {
@@ -277,8 +296,15 @@ const snake = {
 
             // 将蛇头添加
             this.body.unshift(head);
-            // 将蛇尾移除
-            this.last = this.body.pop();
+
+            // 如果吃到食物，就重绘食物、不移除蛇尾
+            if (head[0] === this.food[0] && head[1] === this.food[1]) {
+                this.drawFood();
+                document.getElementById('score').innerHTML = `分数：${this.body.length - 3}`;
+            } else {
+                // 将蛇尾移除
+                this.last = this.body.pop();
+            }
 
             // 重绘蛇
             snake.drawSnake();
@@ -318,25 +344,4 @@ document.addEventListener('keydown', (ev) => {
     else if (ev.key === 'ArrowLeft' && snake.direction !== 'right') {
         snake.direction = 'left';
     }
-});
-
-document.getElementById('t').addEventListener('click', () => {
-    snake.direction = 'top';
-    snake.start();
-    snake.drawSnake();
-});
-document.getElementById('r').addEventListener('click', () => {
-    snake.direction = 'right';
-    snake.start();
-    snake.drawSnake();
-});
-document.getElementById('b').addEventListener('click', () => {
-    snake.direction = 'bottom';
-    snake.start();
-    snake.drawSnake();
-});
-document.getElementById('l').addEventListener('click', () => {
-    snake.direction = 'left';
-    snake.start();
-    snake.drawSnake();
 });
