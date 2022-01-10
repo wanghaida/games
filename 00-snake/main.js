@@ -51,6 +51,8 @@ const drawMap = () => {
              * 根据坐标节点地图类型来显示对应的图案
              *
              * 最少一个方向、最多有两个方向的草墙和当前草墙相连，查找当前草墙的上右下左哪个方向是草墙，进行对应的图案显示
+             *
+             * 地图坐标点属性用对象表示的话，这里的 if 判定完全可以删除
              */
             let classname = '';
 
@@ -150,7 +152,7 @@ const snake = {
 
             // 蛇头
             if (i === 0) {
-                oDivs[node[0] * 30 + node[1]].className = `snake_head_${this.direction}`;
+                oDivs[node[0] * 30 + node[1]].className = `snake_head snake_head_${this.direction}`;
                 continue;
             }
 
