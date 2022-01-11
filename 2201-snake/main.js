@@ -252,7 +252,7 @@ const snake = {
     },
     // 初始化
     init() {
-        clearTimeout(this.timer);
+        this.pause();
 
         document.getElementById('game').innerHTML = '';
         document.getElementById('score').innerHTML = '分数：0';
@@ -318,6 +318,7 @@ const snake = {
     // 暂停游戏
     pause() {
         clearTimeout(this.timer);
+        this.timer = null;
     },
 };
 snake.init();
@@ -331,6 +332,8 @@ document.getElementById('pause').addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (ev) => {
+    if (snake.timer === null) return;
+
     // 上
     if (ev.key === 'ArrowUp' && snake.direction !== 'bottom') {
         snake.direction = 'top';
