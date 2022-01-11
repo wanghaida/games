@@ -255,6 +255,7 @@ const snake = {
         clearTimeout(this.timer);
 
         document.getElementById('game').innerHTML = '';
+        document.getElementById('score').innerHTML = '分数：0';
         drawMap();
 
         this.body = [[2, 4], [2, 3], [2, 2]];

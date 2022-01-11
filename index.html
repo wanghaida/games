@@ -11,11 +11,10 @@
 
     <script>
         const games = {
-            贪吃蛇: '00-snake',
-            俄罗斯方块: '01-tetris',
+            贪吃蛇: '2201-snake',
         };
 
-        document.getElementById('table').innerHTML = ['<tr><th>游戏名称</th><th>演示地址</th><th>演示地址</th></tr>'].concat(Object.keys(games).map((name) => `
+        document.getElementById('table').innerHTML = ['<tr><th>游戏名称</th><th>游戏目录</th><th>演示地址</th></tr>'].concat(Object.keys(games).map((name) => `
             <tr>
                 <td>${name}</td>
                 <td>
@@ -24,8 +23,8 @@
                     </a>
                 </td>
                 <td>
-                    <a href="https://wanghaida.com/demo/${games[name]}/" rel="noopener noreferrer" target="_blank">
-                        https://wanghaida.com/demo/${games[name]}/
+                    <a href="https://wanghaida.com/demo/${games[name]}/index.html" rel="noopener noreferrer" target="_blank">
+                        https://wanghaida.com/demo/${games[name]}/index.html
                     </a>
                 </td>
             </tr>
