@@ -71,7 +71,7 @@ oGame.addEventListener('mouseup', (ev) => {
     if (oGame === ev.target) return;
 
     console.log('mouseup balabala...');
-    ev.target.className = Math.random() < 0.5 ? 'state-closed-up' : 'state-0';
+    ev.target.className = 'state-' + Math.floor(Math.random() * 9);
 });
 // 鼠标从方块单击
 oGame.addEventListener('click', (ev) => {
