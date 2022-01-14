@@ -30,7 +30,7 @@ const drawMap = (row = 9, column = 9) => {
             const oDiv = document.createElement('div');
 
             // 加载动画样式
-            oDiv.className = 'state-loading';
+            oDiv.className = 'state-closed';
 
             // 将坐标节点放入虚拟节点
             oFragment.appendChild(oDiv);
@@ -56,4 +56,32 @@ document.getElementById('medium').addEventListener('click', () => {
 });
 document.getElementById('hard').addEventListener('click', () => {
     drawMap(16, 30);
+});
+
+const oGame = document.getElementById('game');
+// 鼠标从方块按下
+oGame.addEventListener('mousedown', (ev) => {
+    if (oGame === ev.target) return;
+
+    console.log('mousedown balabala...');
+    ev.target.className = 'state-closed-down';
+});
+// 鼠标从方块抬起
+oGame.addEventListener('mouseup', (ev) => {
+    if (oGame === ev.target) return;
+
+    console.log('mouseup balabala...');
+    ev.target.className = Math.random() < 0.5 ? 'state-closed-up' : 'state-0';
+});
+// 鼠标从方块单击
+oGame.addEventListener('click', (ev) => {
+    if (oGame === ev.target) return;
+
+    console.log('click balabala...');
+});
+// 鼠标从方块双击
+oGame.addEventListener('dblclick', (ev) => {
+    if (oGame === ev.target) return;
+
+    console.log('dblclick balabala...');
 });
