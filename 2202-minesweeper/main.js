@@ -1,8 +1,13 @@
+// 游戏区域
+const oGame = document.getElementById('game');
+// 方块缓存
+let oTemp = null;
+
 const minesweeper = {
     /**
      * 游戏数据
      *
-     * @desc 通过二维数组来表示每个方格的属性
+     * @desc 通过二维数组来表示每个方块的属性
      * @example
      * [
      *      [item, item, item],
@@ -11,11 +16,13 @@ const minesweeper = {
      * ]
      *
      * item = {
-     *      // 是否点击过
-     *      isClick: boolean,
+     *      // 是否打开过
+     *      isOpen: boolean,
      *      // 是否递归过
-     *      isRecursion: boolean,
-     *      // 类型 0: 空白, 1-8: 数字, 9: 雷
+     *      isCheck: boolean,
+     *      // 标记 flag normal question
+     *      sign: string,
+     *      // 类型 0: 空白, 1-8: 数字, 9: 地雷
      *      type: number,
      * }
      */
@@ -91,13 +98,15 @@ const minesweeper = {
 
                 // 坐标
                 oDiv.pos = [this.mapCount, i];
-                // 方格
+                // 方块
                 mapTemp.push({
-                    // 是否点击过
-                    isClick: false,
+                    // 是否打开过
+                    isOpen: false,
                     // 是否递归过
-                    isRecursion: false,
-                    // 类型 0: 空白, 1-8: 数字, 9: 雷
+                    isCheck: false,
+                    // 标记 flag normal question
+                    sign: 'normal',
+                    // 类型 0: 空白, 1-8: 数字, 9: 地雷
                     type: 0,
                 });
 
@@ -150,17 +159,17 @@ const minesweeper = {
             const y = pos[i] - x * this.col;
 
             pos[i] = [x, y];
-            // 将对应数据 type 改为 9（雷）
+            // 将对应数据 type 改为 9（地雷）
             this.map[x][y].type = 9;
         }
 
-        // 计算雷周围坐标数字
+        // 计算地雷周围坐标数字
         for (let i = 0; i < pos.length; i++) {
             // 查找周围坐标
             const around = this.findPos(pos[i]);
             for (let j = 0; j < around.length; j++) {
                 const grid = this.map[around[j][0]][around[j][1]];
-                // 不是雷则数字加 1
+                // 不是地雷则数字加 1
                 if (grid.type !== 9) {
                     grid.type++;
                 }
@@ -171,8 +180,6 @@ const minesweeper = {
      * 处理点击事件
      */
     handleClick(dom) {
-        // 判断状态
-        if (this.state === 'loading') return;
         // 修改状态
         if (this.state !== 'ongoing') {
             this.state = 'ongoing';
@@ -182,42 +189,56 @@ const minesweeper = {
 
         const grid = this.map[dom.pos[0]][dom.pos[1]];
 
-        // 修改点击状态
-        grid.isClick = true;
+        // 修改打开状态
+        grid.isOpen = true;
         // 修改递归状态
-        grid.isRecursion = true;
-        // 修改方格样式
+        grid.isCheck = true;
+        // 修改方块样式
         dom.className = 'state-' + grid.type;
 
-        // 处理空白区域
-        if (grid.type === 0) {
+        // 处理地雷方块
+        if (grid.type === 9) {
+            this.handleMines(dom.pos);
+        }
+        // 处理空白方块
+        else if (grid.type === 0) {
             this.handleSpace(dom.pos);
+        }
+        // 处理数字方块
+        else if (grid.type > 0 && grid.type < 9) {
+            this.handleNumber(dom.pos, grid.type);
         }
     },
     /**
-     * 处理空白区域
+     * 处理地雷方块
+     */
+    handleMines(pos) {
+        // this.state = 'over';
+        console.log('Game Over!');
+        // this.initMap(this.row, this.col, this.mines);
+    },
+    /**
+     * 处理空白方块
      */
     handleSpace(pos) {
-        const oGame = document.getElementById('game');
-
         // 查找周围坐标
         const around = this.findPos(pos);
         for (let i = 0; i < around.length; i++) {
             // 坐标
             const [x, y] = around[i];
-            // 对应方格
+            // 对应方块
             const grid = this.map[x][y];
 
-            // 判断是否递归过
-            if (false === grid.isRecursion) {
-                // 修改点击状态
-                grid.isClick = true;
+            // 未递归过 且 标记为 normal
+            if (false === grid.isCheck && 'normal' === grid.sign) {
+                // 修改打开状态
+                grid.isOpen = true;
                 // 修改递归状态
-                grid.isRecursion = true;
+                grid.isCheck = true;
 
                 // 加载动画样式
                 const oDiv = oGame.children[x * this.col + y];
-                oDiv.className = 'state-down';
+                oDiv.className = 'state-' + grid.sign + '-down';
                 oDiv.addEventListener('animationend', function fn() {
                     oDiv.className = 'state-' + grid.type;
                     oDiv.removeEventListener('animationend', fn);
@@ -230,6 +251,59 @@ const minesweeper = {
                 // 如果为空白则递归
                 if (grid.type === 0) {
                     this.handleSpace(around[i]);
+                }
+            }
+        }
+    },
+    /**
+     * 处理数字方块
+     */
+    handleNumber(pos, type) {
+        // 查找周围坐标
+        const around = this.findPos(pos);
+
+        // 标记的数量，当旗子（flag） >= 数字（type）时，才能将剩余 normal 标记做点击处理
+        let flag = 0;
+        // 旗子方块
+        const flags = [];
+        // 地雷方块
+        const mines = [];
+
+        for (let i = 0; i < around.length; i++) {
+            // 坐标
+            const [x, y] = around[i];
+            // 对应方块
+            const grid = this.map[x][y];
+
+            // 旗子
+            if (grid.sign === 'flag') {
+                flag++;
+                flags.push({ ...grid, pos: around[i] });
+            }
+            // 地雷
+            if (grid.type === 9) {
+                mines.push({ ...grid, pos: around[i] });
+            }
+        }
+
+        if (flag >= type) {
+            // 判断标记是否正确，因为都是一个顺序 push，所以可以简单的转字符串后比对
+            if (JSON.stringify(flags) === JSON.stringify(mines)) {
+                this.handleSpace(pos);
+            }
+            // 标记错误
+            else {
+                // 处理错误旗子
+                for (let i = 0; i < flags.length; i++) {
+                    if (flags[i].type === 9) continue;
+
+                    oGame.children[flags[i].pos[0] * this.col + flags[i].pos[1]].className = 'state-flag-error';
+                }
+                // 处理错误地雷
+                for (let i = 0; i < mines.length; i++) {
+                    if (mines[i].sign === 'flag') continue;
+
+                    this.handleMines(mines[i].pos);
                 }
             }
         }
@@ -271,20 +345,18 @@ document.getElementById('hard').addEventListener('click', () => {
 });
 document.oncontextmenu = () => false;
 
-const oGame = document.getElementById('game');
-let oTemp = null;
-
 // 鼠标从方块按下
 oGame.addEventListener('mousedown', (ev) => {
-    if (oGame === ev.target) return;
+    // 没点中方块 或 游戏加载中/游戏已结束
+    if (oGame === ev.target || ['loading', 'over'].includes(minesweeper.state)) return;
 
     // 缓存按下元素
     oTemp = ev.target;
 
     const [x, y] = ev.target.pos;
-    if (false === minesweeper.map[x][y].isClick) {
+    if (false === minesweeper.map[x][y].isOpen) {
         // 给缓存的元素添加按下样式
-        oTemp.className = 'state-down';
+        oTemp.className = 'state-' + minesweeper.map[x][y].sign + '-down';
     }
 });
 // 鼠标移动
@@ -292,9 +364,9 @@ oGame.addEventListener('mousemove', (ev) => {
     // 缓存的 oTemp 和当前元素不一致
     if (oTemp && oTemp !== ev.target) {
         // 如果缓存的元素为按下样式
-        if (oTemp.className === 'state-down') {
+        if (oTemp.className.match(/state\-.+\-down/)) {
             // 给缓存的元素添加抬起样式
-            oTemp.className = 'state-up';
+            oTemp.className = oTemp.className.replace('-down', '-up');
         }
         // 删除缓存元素
         oTemp = null;
@@ -309,8 +381,26 @@ oGame.addEventListener('mouseup', (ev) => {
         return;
     }
 
-    // 处理点击事件
-    minesweeper.handleClick(oTemp);
+    const [x, y] = ev.target.pos;
+
+    // 单击
+    if (ev.button === 0) {
+        // 处理点击事件
+        minesweeper.handleClick(oTemp);
+    }
+    // 右击 且 未打开过
+    if (ev.button === 2 && false === minesweeper.map[x][y].isOpen) {
+        // 修改标记状态
+        minesweeper.map[x][y].sign = {
+            flag: 'question',
+            normal: 'flag',
+            question: 'normal',
+        }[minesweeper.map[x][y].sign];
+
+        // 给缓存的元素添加抬起样式
+        oTemp.className = 'state-' + minesweeper.map[x][y].sign + '-up';
+    }
+
     // 删除缓存元素
     oTemp = null;
 });

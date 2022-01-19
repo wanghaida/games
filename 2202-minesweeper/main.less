@@ -107,13 +107,8 @@
     .state-closed {
         background-position: calc(-84px / var(--base)) 0;
     }
-    .state-down {
-        background-position: calc(-588px / var(--base)) calc(-168px / var(--base));
-        animation: state-down 0.1s steps(1);
-    }
-    .state-up {
-        background-position: calc(-924px / var(--base)) calc(-168px / var(--base));
-        animation: state-up 0.1s steps(1);
+    .state-flag-error {
+        background-position: calc(-1260px / var(--base)) 0;
     }
     .state-flag-down {
         background-position: calc(-1260px / var(--base)) calc(-168px / var(--base));
@@ -122,6 +117,14 @@
     .state-flag-up {
         background-position: calc(-252px / var(--base)) calc(-252px / var(--base));
         animation: state-flag-up 0.1s steps(1);
+    }
+    .state-normal-down {
+        background-position: calc(-588px / var(--base)) calc(-168px / var(--base));
+        animation: state-normal-down 0.1s steps(1);
+    }
+    .state-normal-up {
+        background-position: calc(-924px / var(--base)) calc(-168px / var(--base));
+        animation: state-normal-up 0.1s steps(1);
     }
     .state-question-down {
         background-position: calc(-588px / var(--base)) calc(-252px / var(--base));
@@ -181,34 +184,6 @@
         background-position: calc(-1260px / var(--base)) calc(-84px / var(--base));
     }
 }
-@keyframes state-down {
-    0% {
-        background-position: calc(-336px / var(--base)) calc(-168px / var(--base));
-    }
-    33.33% {
-        background-position: calc(-420px / var(--base)) calc(-168px / var(--base));
-    }
-    66.66% {
-        background-position: calc(-504px / var(--base)) calc(-168px / var(--base));
-    }
-    100% {
-        background-position: calc(-588px / var(--base)) calc(-168px / var(--base));
-    }
-}
-@keyframes state-up {
-    0% {
-        background-position: calc(-672px / var(--base)) calc(-168px / var(--base));
-    }
-    33.33% {
-        background-position: calc(-756px / var(--base)) calc(-168px / var(--base));
-    }
-    66.66% {
-        background-position: calc(-840px / var(--base)) calc(-168px / var(--base));
-    }
-    100% {
-        background-position: calc(-924px / var(--base)) calc(-168px / var(--base));
-    }
-}
 @keyframes state-flag-down {
     0% {
         background-position: calc(-1008px / var(--base)) calc(-168px / var(--base));
@@ -235,6 +210,34 @@
     }
     100% {
         background-position: calc(-252px / var(--base)) calc(-252px / var(--base));
+    }
+}
+@keyframes state-normal-down {
+    0% {
+        background-position: calc(-336px / var(--base)) calc(-168px / var(--base));
+    }
+    33.33% {
+        background-position: calc(-420px / var(--base)) calc(-168px / var(--base));
+    }
+    66.66% {
+        background-position: calc(-504px / var(--base)) calc(-168px / var(--base));
+    }
+    100% {
+        background-position: calc(-588px / var(--base)) calc(-168px / var(--base));
+    }
+}
+@keyframes state-normal-up {
+    0% {
+        background-position: calc(-672px / var(--base)) calc(-168px / var(--base));
+    }
+    33.33% {
+        background-position: calc(-756px / var(--base)) calc(-168px / var(--base));
+    }
+    66.66% {
+        background-position: calc(-840px / var(--base)) calc(-168px / var(--base));
+    }
+    100% {
+        background-position: calc(-924px / var(--base)) calc(-168px / var(--base));
     }
 }
 @keyframes state-question-down {
