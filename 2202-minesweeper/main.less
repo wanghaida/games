@@ -134,6 +134,19 @@
         background-position: calc(-924px / var(--base)) calc(-252px / var(--base));
         animation: state-question-up 0.1s steps(1);
     }
+    .state-over {
+        background: url('./images/sprite_over.png') calc(-1260px / var(--base)) 0 / calc(1344px / var(--base)) calc(756px / var(--base)) no-repeat;
+
+        &::before {
+            top: calc(-84px / var(--base));
+            left: calc(-84px / var(--base));
+            z-index: 1;
+            width: calc(252px / var(--base));
+            height: calc(252px / var(--base));
+            background: url('./images/sprite_over.png') 252px 252px / calc(1344px / var(--base)) calc(756px / var(--base)) no-repeat;
+            animation: state-over 1s steps(1);
+        }
+    }
 
     .state-0 {
         background-position: 0 0;
@@ -266,5 +279,55 @@
     }
     100% {
         background-position: calc(-924px / var(--base)) calc(-252px / var(--base));
+    }
+}
+@keyframes state-over {
+    0% {
+        background-position: 0 0;
+    }
+    6.66% {
+        background-position: calc(-252px / var(--base)) 0;
+    }
+    13.33% {
+        background-position: calc(-504px / var(--base)) 0;
+    }
+    20% {
+        background-position: calc(-756px / var(--base)) 0;
+    }
+    26.66% {
+        background-position: calc(-1008px / var(--base)) 0;
+    }
+    33.33% {
+        background-position: 0 calc(-252px / var(--base));
+    }
+    40% {
+        background-position: calc(-252px / var(--base)) calc(-252px / var(--base));
+    }
+    46.66% {
+        background-position: calc(-504px / var(--base)) calc(-252px / var(--base));
+    }
+    53.33% {
+        background-position: calc(-756px / var(--base)) calc(-252px / var(--base));
+    }
+    60% {
+        background-position: calc(-1008px / var(--base)) calc(-252px / var(--base));
+    }
+    66.66% {
+        background-position: 0 calc(-504px / var(--base));
+    }
+    73.33% {
+        background-position: calc(-252px / var(--base)) calc(-504px / var(--base));
+    }
+    80% {
+        background-position: calc(-504px / var(--base)) calc(-504px / var(--base));
+    }
+    86.66% {
+        background-position: calc(-756px / var(--base)) calc(-504px / var(--base));
+    }
+    93.33% {
+        background-position: calc(-1008px / var(--base)) calc(-504px / var(--base));
+    }
+    100% {
+        background-position: 0 calc(-756px / var(--base));
     }
 }

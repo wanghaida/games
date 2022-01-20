@@ -213,9 +213,14 @@ const minesweeper = {
      * 处理地雷方块
      */
     handleMines(pos) {
-        // this.state = 'over';
+        const oDiv = oGame.children[pos[0] * this.col + pos[1]];
+
+        // 修改状态
+        this.state = 'over';
+        // 添加爆炸样式
+        oDiv.className = 'state-over';
+
         console.log('Game Over!');
-        // this.initMap(this.row, this.col, this.mines);
     },
     /**
      * 处理空白方块
