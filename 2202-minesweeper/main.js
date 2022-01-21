@@ -473,7 +473,7 @@ oGame.addEventListener('mousedown', (ev) => {
 // 鼠标移动
 oGame.addEventListener('mousemove', (ev) => {
     // 缓存的 oTemp 和当前元素不一致
-    if (oTemp !== ev.target) {
+    if (oTemp && oTemp !== ev.target) {
         // 如果缓存的元素为按下样式
         if (oTemp.className.match(/state\-.+\-down/)) {
             // 给缓存的元素添加抬起样式
