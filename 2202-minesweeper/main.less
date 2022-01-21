@@ -79,12 +79,37 @@
 
 // 游戏区
 #game {
+    position: relative;
     display: grid;
     grid-template-rows: repeat(var(--row), calc(84px / var(--base)));
     grid-template-columns: repeat(var(--col), calc(84px / var(--base)));
     gap: 2px;
     width: fit-content;
     margin: calc((590px - 84px / var(--base) * var(--row) - 2px * var(--row) - 2px) / 2) auto;
+
+    &.success::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.2) url('./images/result_success.png') center / 512px 97px no-repeat;
+        animation: game-success 0.3s;
+    }
+
+    &.fail::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.2) url('./images/result_fail.png') center / 512px 72px no-repeat;
+        animation: game-fail 0.3s;
+    }
 
     div {
         position: relative;
@@ -134,6 +159,11 @@
         background-position: calc(-924px / var(--base)) calc(-252px / var(--base));
         animation: state-question-up 0.1s steps(1);
     }
+
+    .state-explode {
+        background-position: calc(-1260px / var(--base)) calc(-252px / var(--base));
+        animation: state-explode 0.3s steps(1);
+    }
     .state-over {
         background: url('./images/sprite_over.png') calc(-1260px / var(--base)) 0 / calc(1344px / var(--base)) calc(756px / var(--base)) no-repeat;
 
@@ -180,6 +210,22 @@
     }
 }
 
+@keyframes game-success {
+    0% {
+        background-position: top -97px center;
+    }
+    100% {
+        background-position: center;
+    }
+}
+@keyframes game-fail {
+    0% {
+        background-position: top -72px center;
+    }
+    100% {
+        background-position: center;
+    }
+}
 @keyframes state-loading {
     0% {
         background-position: calc(-504px / var(--base)) calc(-84px / var(--base));
@@ -255,13 +301,13 @@
 }
 @keyframes state-question-down {
     0% {
-        background-position: calc(-336px / var(--base)) calc(-168px / var(--base));
+        background-position: calc(-336px / var(--base)) calc(-252px / var(--base));
     }
     33.33% {
-        background-position: calc(-420px / var(--base)) calc(-168px / var(--base));
+        background-position: calc(-420px / var(--base)) calc(-252px / var(--base));
     }
     66.66% {
-        background-position: calc(-504px / var(--base)) calc(-168px / var(--base));
+        background-position: calc(-504px / var(--base)) calc(-252px / var(--base));
     }
     100% {
         background-position: calc(-588px / var(--base)) calc(-252px / var(--base));
@@ -279,6 +325,14 @@
     }
     100% {
         background-position: calc(-924px / var(--base)) calc(-252px / var(--base));
+    }
+}
+@keyframes state-explode {
+    0% {
+        background-position: calc(-1176px / var(--base)) calc(-252px / var(--base));
+    }
+    50% {
+        background-position: calc(-1260px / var(--base)) calc(-252px / var(--base));
     }
 }
 @keyframes state-over {

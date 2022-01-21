@@ -20,6 +20,8 @@ const minesweeper = {
      *      isOpen: boolean,
      *      // 是否递归过
      *      isCheck: boolean,
+     *      // 是否爆炸过（同 isCheck，用于游戏结束后的递归判定）
+     *      isExplode: boolean,
      *      // 标记 flag normal question
      *      sign: string,
      *      // 类型 0: 空白, 1-8: 数字, 9: 地雷
@@ -58,7 +60,7 @@ const minesweeper = {
         document.getElementById('timer').innerHTML = '00:00';
 
         // 清除原有地图
-        const oGame = document.getElementById('game');
+        oGame.className = '';
         oGame.innerHTML = '';
 
         // 调整地图布局
@@ -104,6 +106,8 @@ const minesweeper = {
                     isOpen: false,
                     // 是否递归过
                     isCheck: false,
+                    // 是否爆炸过
+                    isExplode: false,
                     // 标记 flag normal question
                     sign: 'normal',
                     // 类型 0: 空白, 1-8: 数字, 9: 地雷
@@ -139,6 +143,17 @@ const minesweeper = {
             [x - 1, y - 1], [x - 1, y], [x - 1, y + 1],
             [x,     y - 1],             [x,     y + 1],
             [x + 1, y - 1], [x + 1, y], [x + 1, y + 1],
+        ];
+        // 简单的碰撞检测去除边界值
+        return pos.filter(([x, y]) => !(x < 0 || y < 0 || x >= this.row || y >= this.col));
+    },
+    findPosUDLR([x, y]) {
+        // 周围坐标
+        const pos = [
+            [x - 1, y], // 上
+            [x + 1, y], // 下
+            [x, y - 1], // 左
+            [x, y + 1], // 右
         ];
         // 简单的碰撞检测去除边界值
         return pos.filter(([x, y]) => !(x < 0 || y < 0 || x >= this.row || y >= this.col));
@@ -198,29 +213,125 @@ const minesweeper = {
 
         // 处理地雷方块
         if (grid.type === 9) {
-            this.handleMines(dom.pos);
+            this.handleMines([dom.pos]);
         }
         // 处理空白方块
         else if (grid.type === 0) {
             this.handleSpace(dom.pos);
         }
-        // 处理数字方块
-        else if (grid.type > 0 && grid.type < 9) {
-            this.handleNumber(dom.pos, grid.type);
+        // // 处理数字方块（这里改为双击触发）
+        // else if (grid.type > 0 && grid.type < 9) {
+        //     this.handleNumber(dom.pos, grid.type);
+        // }
+
+        // 判断游戏成功（未打开的方块 === 旗子的数量 + 地雷的数量）
+        let count = 0;
+        let flags = 0;
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                // 未打开的方块
+                if (this.map[i][j].isOpen === false) {
+                    count++;
+                }
+                // 旗子的数量
+                if (this.map[i][j].sign === 'flag') {
+                    flags++;
+                }
+            }
         }
+
+        if (count === flags + this.mines) {
+            this.state = 'over';
+            oGame.className = 'success';
+        }
+    },
+    /**
+     * 处理地雷爆炸
+     */
+    explodeMines(pos) {
+        setTimeout(() => {
+            // 查找周围坐标
+            const around = this.findPosUDLR(pos);
+            for (let i = 0; i < around.length; i++) {
+                // 坐标
+                const [x, y] = around[i];
+                // 对应方块
+                const grid = this.map[x][y];
+
+                // 未爆炸过
+                if (grid.isExplode === false && grid.sign !== 'flag') {
+                    // 修改爆炸状态
+                    grid.isExplode = true;
+
+                    const oDiv = oGame.children[x * this.col + y];
+
+                    // 如果是地雷
+                    if (grid.type === 9) {
+                        // 修改打开状态
+                        grid.isOpen = true;
+                        // 加载动画样式
+                        oDiv.className = 'state-over';
+                    }
+                    // 如果未打开
+                    else if (!grid.isOpen) {
+                        // 加载动画样式
+                        oDiv.className = 'state-explode';
+                        oDiv.addEventListener('animationend', function fn() {
+                            oDiv.className = 'state-closed';
+                            oDiv.removeEventListener('animationend', fn);
+                        });
+                    }
+
+                    // 爆炸递归
+                    this.explodeMines(around[i]);
+                }
+            }
+        }, 100);
     },
     /**
      * 处理地雷方块
      */
     handleMines(pos) {
-        const oDiv = oGame.children[pos[0] * this.col + pos[1]];
-
         // 修改状态
         this.state = 'over';
-        // 添加爆炸样式
-        oDiv.className = 'state-over';
+        oGame.className = 'fail';
+        // 清除时间
+        clearInterval(this.startTimer);
 
-        console.log('Game Over!');
+        // 标记所有地雷和错误旗子
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                // 是地雷 且 不是旗子
+                if (this.map[i][j].type === 9 && this.map[i][j].sign !== 'flag') {
+                    oGame.children[i * this.col + j].classList = 'state-9';
+                }
+                // 不是地雷 且 是旗子
+                if (this.map[i][j].type !== 9 && this.map[i][j].sign === 'flag') {
+                    oGame.children[i * this.col + j].classList = 'state-flag-error';
+                }
+            }
+        }
+
+        for (let i = 0; i < pos.length; i++) {
+            // 坐标
+            const [x, y] = pos[i];
+            // 当前方块
+            const grid = this.map[x][y];
+
+            // 修改打开状态
+            grid.isOpen = true;
+            // 修改爆炸状态
+            grid.isExplode = true;
+
+            // 加载动画样式
+            const oDiv = oGame.children[x * this.col + y];
+            oDiv.className = 'state-over';
+            oDiv.addEventListener('animationend', function fn() {
+                // 游戏结束动画
+                minesweeper.explodeMines(pos[i]);
+                oDiv.removeEventListener('animationend', fn);
+            });
+        }
     },
     /**
      * 处理空白方块
@@ -305,11 +416,7 @@ const minesweeper = {
                     oGame.children[flags[i].pos[0] * this.col + flags[i].pos[1]].className = 'state-flag-error';
                 }
                 // 处理错误地雷
-                for (let i = 0; i < mines.length; i++) {
-                    if (mines[i].sign === 'flag') continue;
-
-                    this.handleMines(mines[i].pos);
-                }
+                this.handleMines(mines.filter((item) => item.sign !== 'flag').map((item) => item.pos));
             }
         }
     },
@@ -355,11 +462,10 @@ oGame.addEventListener('mousedown', (ev) => {
     // 没点中方块 或 游戏加载中/游戏已结束
     if (oGame === ev.target || ['loading', 'over'].includes(minesweeper.state)) return;
 
-    // 缓存按下元素
-    oTemp = ev.target;
-
     const [x, y] = ev.target.pos;
     if (false === minesweeper.map[x][y].isOpen) {
+        // 缓存按下元素
+        oTemp = ev.target;
         // 给缓存的元素添加按下样式
         oTemp.className = 'state-' + minesweeper.map[x][y].sign + '-down';
     }
@@ -367,7 +473,7 @@ oGame.addEventListener('mousedown', (ev) => {
 // 鼠标移动
 oGame.addEventListener('mousemove', (ev) => {
     // 缓存的 oTemp 和当前元素不一致
-    if (oTemp && oTemp !== ev.target) {
+    if (oTemp !== ev.target) {
         // 如果缓存的元素为按下样式
         if (oTemp.className.match(/state\-.+\-down/)) {
             // 给缓存的元素添加抬起样式
@@ -390,11 +496,17 @@ oGame.addEventListener('mouseup', (ev) => {
 
     // 单击
     if (ev.button === 0) {
-        // 处理点击事件
-        minesweeper.handleClick(oTemp);
+        // 没有标记
+        if (minesweeper.map[x][y].sign === 'normal') {
+            // 处理点击事件
+            minesweeper.handleClick(oTemp);
+        } else {
+            // 给缓存的元素添加抬起样式
+            oTemp.className = 'state-' + minesweeper.map[x][y].sign + '-up';
+        }
     }
     // 右击 且 未打开过
-    if (ev.button === 2 && false === minesweeper.map[x][y].isOpen) {
+    if (ev.button === 2) {
         // 修改标记状态
         minesweeper.map[x][y].sign = {
             flag: 'question',
@@ -402,10 +514,31 @@ oGame.addEventListener('mouseup', (ev) => {
             question: 'normal',
         }[minesweeper.map[x][y].sign];
 
+        // 地雷数量
+        if (minesweeper.map[x][y].sign === 'flag') {
+            minesweeper.mines -= 1;
+        }
+        if (minesweeper.map[x][y].sign === 'question') {
+            minesweeper.mines += 1;
+        }
+        document.getElementById('mines').innerHTML = minesweeper.mines;
+
         // 给缓存的元素添加抬起样式
         oTemp.className = 'state-' + minesweeper.map[x][y].sign + '-up';
     }
 
     // 删除缓存元素
     oTemp = null;
+});
+// 双击
+oGame.addEventListener('dblclick', (ev) => {
+    // 没点中方块
+    if (oGame === ev.target) return;
+
+    const [x, y] = ev.target.pos;
+    const grid = minesweeper.map[x][y];
+    // 打开 且 为数字
+    if (grid.isOpen && grid.type > 0 && grid.type < 9) {
+        minesweeper.handleNumber([x, y], grid.type);
+    }
 });
