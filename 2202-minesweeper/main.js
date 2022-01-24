@@ -32,7 +32,7 @@ const minesweeper = {
     /**
      * 游戏状态
      *
-     * loaded: 加载完成, loading: 加载中, ongoing: 进行中
+     * loaded: 加载完成, loading: 加载中, ongoing: 进行中, over: 游戏结束
      */
     state: 'loading',
     /**
@@ -224,26 +224,8 @@ const minesweeper = {
         //     this.handleNumber(dom.pos, grid.type);
         // }
 
-        // 判断游戏成功（未打开的方块 === 旗子的数量 + 地雷的数量）
-        let count = 0;
-        let flags = 0;
-        for (let i = 0; i < this.map.length; i++) {
-            for (let j = 0; j < this.map[i].length; j++) {
-                // 未打开的方块
-                if (this.map[i][j].isOpen === false) {
-                    count++;
-                }
-                // 旗子的数量
-                if (this.map[i][j].sign === 'flag') {
-                    flags++;
-                }
-            }
-        }
-
-        if (count === flags + this.mines) {
-            this.state = 'over';
-            oGame.className = 'success';
-        }
+        // 判断游戏胜利
+        this.judgeVictory();
     },
     /**
      * 处理地雷爆炸
@@ -421,6 +403,33 @@ const minesweeper = {
         }
     },
     /**
+     * 判断游戏胜利
+     *
+     * 未打开的方块 === 旗子的数量 + 地雷的数量
+     */
+    judgeVictory() {
+        let count = 0;
+        let flags = 0;
+
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                // 未打开的方块
+                if (this.map[i][j].isOpen === false) {
+                    count++;
+                }
+                // 旗子的数量
+                if (this.map[i][j].sign === 'flag') {
+                    flags++;
+                }
+            }
+        }
+
+        if (count === flags + this.mines) {
+            this.state = 'over';
+            oGame.className = 'success';
+        }
+    },
+    /**
      * 游戏计时
      */
     startTime: 0,
@@ -537,8 +546,12 @@ oGame.addEventListener('dblclick', (ev) => {
 
     const [x, y] = ev.target.pos;
     const grid = minesweeper.map[x][y];
+
     // 打开 且 为数字
     if (grid.isOpen && grid.type > 0 && grid.type < 9) {
         minesweeper.handleNumber([x, y], grid.type);
+
+        // 判断游戏胜利
+        minesweeper.judgeVictory();
     }
 });
