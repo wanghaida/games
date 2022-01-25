@@ -23,7 +23,7 @@
 游戏名称 | 游戏目录 | 计划时间 | 演示地址
 :---|:---|:---|:---
 贪吃蛇 | 2201-snake | 2022.01 | [演示地址](https://wanghaida.com/demo/2201-snake/index.html)、[游戏总结与分享](https://juejin.cn/post/7051411538577457183)
-扫雷 | 2202-minesweeper | 2022.02 | [演示地址](https://wanghaida.com/demo/2202-minesweeper/index.html)
+扫雷 | 2202-minesweeper | 2022.02 | [演示地址](https://wanghaida.com/demo/2202-minesweeper/index.html)、[游戏总结与分享](https://juejin.cn/post/7057005547307925540)
 俄罗斯方块 | \- | \- | \-
 贪吃蛇竞技版 | \- | \- | \-
 青蛙过河 | \- | \- | \-
