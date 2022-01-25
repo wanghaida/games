@@ -171,7 +171,7 @@ const minesweeper = {
         // 将数字转为坐标数组
         for (let i = 0; i < pos.length; i++) {
             const x = Math.floor(pos[i] / this.col);
-            const y = pos[i] % this.col;
+            const y = pos[i] - x * this.col;
 
             pos[i] = [x, y];
             // 将对应数据 type 改为 9（地雷）
@@ -211,13 +211,13 @@ const minesweeper = {
         // 修改方块样式
         dom.className = 'state-' + grid.type;
 
-        // 处理空白方块
-        if (grid.type === 0) {
-            this.handleSpace(dom.pos);
-        }
         // 处理地雷方块
-        else if (grid.type === 9) {
+        if (grid.type === 9) {
             this.handleMines([dom.pos]);
+        }
+        // 处理空白方块
+        else if (grid.type === 0) {
+            this.handleSpace(dom.pos);
         }
         // // 处理数字方块（这里改为双击触发）
         // else if (grid.type > 0 && grid.type < 9) {
@@ -285,11 +285,11 @@ const minesweeper = {
             for (let j = 0; j < this.map[i].length; j++) {
                 // 是地雷 且 不是旗子
                 if (this.map[i][j].type === 9 && this.map[i][j].sign !== 'flag') {
-                    oGame.children[i * this.col + j].className = 'state-9';
+                    oGame.children[i * this.col + j].classList = 'state-9';
                 }
                 // 不是地雷 且 是旗子
                 if (this.map[i][j].type !== 9 && this.map[i][j].sign === 'flag') {
-                    oGame.children[i * this.col + j].className = 'state-flag-error';
+                    oGame.children[i * this.col + j].classList = 'state-flag-error';
                 }
             }
         }
@@ -425,11 +425,8 @@ const minesweeper = {
         }
 
         if (count === flags + this.mines) {
-            // 修改状态
             this.state = 'over';
             oGame.className = 'success';
-            // 清除时间
-            clearInterval(this.startTimer);
         }
     },
     /**
@@ -494,7 +491,7 @@ oGame.addEventListener('mousemove', (ev) => {
         // 删除缓存元素
         oTemp = null;
     }
-});
+})
 // 鼠标抬起
 oGame.addEventListener('mouseup', (ev) => {
     // 缓存的 oTemp 和当前元素不一致
